@@ -1,0 +1,180 @@
+﻿<!DOCTYPE html><html>
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+<script type="text/javascript" src="neptune/server/jquery/js/jquery-1.7.2.min.js"></script>
+<link href="neptune/public/application/zfwf_app_dfo_portal2/css/app.css" type="text/css" rel="stylesheet" />
+<link rel="stylesheet" href="http://code.jquery.com/mobile/1.2.0-beta.1/jquery.mobile-1.2.0-beta.1.min.css" />
+
+<script src="http://code.jquery.com/mobile/1.2.0-beta.1/jquery.mobile-1.2.0-beta.1.min.js"></script>
+
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="viewport" content="user-scalable=0;"/>
+
+<title>Startside</title>
+</head>
+<body ><div data-role="page" data-theme="b" id="mainPage" style="margin:0;overflow:hidden;"><section id="myMenu" style="z-index:0;position:absolute;min-height:100%;float:left;height:100%;"><script>
+$('div:jqmData(role="page")').on('pageshow', function(event, ui) {
+	
+	// Remove previous page from DOM.
+	$(ui.prevPage).remove();
+	
+	// Set swipe sensitivity.
+	$.event.special.swipe.horizontalDistanceThreshold = 50;
+	
+	// Set menu speed.
+	var menuspeed = 0.2;
+
+	// Declare IDs.
+	var menuID = '#' + $(this).children().attr('id');
+	var pageID = '#' + $(this).children().next().attr('id');
+	
+	// Declare height variables.
+	var mypageheight = $(pageID).height();
+	var windowheight = $(window).height();
+	var maxheight = Math.max(windowheight, mypageheight);
+	
+	// Set initial menuStatus variable.
+	menuStatus = false;
+	
+	// Adjust initial myPage height.	
+	if (mypageheight < windowheight) {	
+		// Check if footer exists.
+		if ($('#myFooter').length > 0) {
+			$(pageID).height(windowheight-51);
+		} else {
+			$(pageID).height(windowheight);
+		}
+		$(pageID).trigger('updatelayout');
+	}
+	
+	// Adjust initial myMenu height.
+	$(menuID).height(maxheight);
+	
+	// Adjust myPage/myMenu height on device orientation change.
+	$(window).off('orientationchange').on('orientationchange', function(event) {
+		// Declare new height variables.
+		var windowheight = $(window).height();
+		var maxheight = Math.max(windowheight, mypageheight);
+		// Adjust myPage height.
+		if (mypageheight < windowheight) {
+			$(pageID).height(windowheight);
+			$(pageID).trigger('updatelayout');
+		} else {
+			$(pageID).height(mypageheight);
+			$(pageID).trigger('updatelayout');
+		}
+		// Adjust myMenu height.
+		$(menuID).height(maxheight);
+	});
+
+	// Function: Page animation.
+	function pageposition(position) {
+		$(pageID).css({
+			WebkitTransition: 'all ' + menuspeed + 's ease',
+			MozTransition: 'all ' + menuspeed + 's ease',
+			MsTransition: 'all ' + menuspeed + 's ease',
+			OTransition: 'all ' + menuspeed + 's ease',
+			transition: 'all ' + menuspeed + 's ease',
+			WebkitTransform: 'translate(' + position + ', 0)',
+			MozTransform: 'translate(' + position + ', 0)',
+			MsTransform: 'translate(' + position + ', 0)',
+			OTransform: 'translate(' + position + ', 0)',
+			transform: 'translate(' + position + ', 0)'
+		});
+	}
+
+	// Function: Display and hide myMenu.
+	function myMenu(attribute) {
+		if (attribute == 'show') {
+			$('#gloweffect').trigger('mouseleave');
+			$('#gloweffect').removeClass('glowout').addClass('glowin');
+			$('a.toggleMenu').removeClass('inactiveMenu').addClass('activeMenu');
+			if ($(menuID).not(':visible')) $(menuID).show();
+			pageposition('165px');
+			menuStatus = true;
+			return false;
+		} else if (attribute == 'hide') {
+			$('#gloweffect').addClass('glowout').removeClass('glowin');
+			$('a.toggleMenu').removeClass('activeMenu').addClass('inactiveMenu');
+			pageposition('0');
+			menuStatus = false;
+			return false;
+		}
+	}
+
+	// Toggle myMenu on click.
+	$('a.toggleMenu').off('click').on('click', function(event) {
+		if (menuStatus != true) {
+			myMenu('show');
+		} else {
+			myMenu('hide');
+		}
+	});
+
+	// Toggle myMenu on swipe.
+	$(pageID).off('swipeleft swiperight').on('swipeleft swiperight', function(event) {
+		event.preventDefault();
+		if (event.type == 'swiperight') {
+			if (!menuStatus) myMenu('show');
+		} else if (event.type == 'swipeleft') {
+			if (menuStatus) myMenu('hide');
+		}
+	});
+	
+	// myMenu list item click action.
+	$('a.contentLink').off('click').on('click', function(event) {
+		event.preventDefault();
+		var myhref = $(this).attr('href');
+		var mytransition = $(this).attr('data-transition');
+		var mydirection = $(this).attr('data-direction');
+		if ( mydirection == "reverse") {
+			myreverse = true;
+		} else {
+			myreverse = false;
+		}
+		var p = $(this).parent();
+		if ($(p).hasClass('active')) {
+			return false;
+		} else {
+			myMenu('hide');
+			$(menuID).hide('fast', function () {
+				$.mobile.changePage(myhref, {
+					transition: mytransition,
+					reverse: myreverse
+				});
+			});
+			return false;
+		}
+	});
+
+});</script><div data-role="content" id="menu" style="overflow:hidden;padding:0;width:165px;min-height:100%;margin:0;height:100%;"><div id="menuHeader" class="menuHeader" style="padding-left:10px;height:50px;border-top:solid #333 1px;"><h3 id="headerTitle" style="text-shadow:0px 1px 1px #000;margin-top:18px;margin-right:0;margin-left:0;margin-bottom:0;font-size:12px;font-family:arial;color:#fff;background:transparent;">Hovedmeny</h3></div><div id="menuList" style="height:inherit;min-width:inherit;padding:0; overflow-y: auto;  -webkit-overflow-scrolling: touch;"><ul style="margin:0;padding-bottom:52px;padding-left:0;padding-right:0;padding-top:0;width:inherit;"><li class="active" style="list-style-type:none;margin:0;padding:0;"><a id="Hjem" class="contentLink" data-direction="reverse" data-transition="slide" href="zfwf_app_dfo_portal2.html">Hjem</a></li><li style="list-style-type:none;margin:0;padding:0;"><a id="Nyreiseregning" class="contentLink" href="#">Ny reiseregning</a></li><li style="list-style-type:none;margin:0;padding:0;"><a id="Visreiseregninger" class="contentLink" href="#">Vis reiseregninger</a></li><li style="padding:0;margin:0;list-style-type:none;"><a id="Innboks" class="contentLink" data-direction="reverse" data-prefetch="true" data-transition="slide" href="zfwf_app_dfo_test2.html">Vis innboks</a></li><li style="list-style-type:none;margin:0;padding:0;"><a id="loggUt" class="contentLink" href="#">Logg ut</a></li></ul></div></div></section><section class="myPage" id="myPage" style="box-shadow:-2px 1px 10px 0px #2c2c2c;height:100%;min-height:100%;position:relative;z-index:999;"><section id="Header"><header data-role="header" data-tap-toggle="false" data-theme="a" id="myHeader" style="height:50px;position:relative;"><h3 id="headerTitle" style="font-size:14px;margin-bottom:0;margin-left:0;margin-right:0;margin-top:16px;"></h3><a id="Menu" class="toggleMenu" data-role="none" href="#" style="background:url('/neptune/public/application/zfwf_app_viportal/images/menu.png');background-position:left;background-repeat:no-repeat;height:32px;margin-left:10px;margin-top:7px;width:100px;"><img class="glow" id="gloweffect" src="neptune/public/application/zfwf_app_dfo_portal2/images/glow.png" style="margin-left:-16px;margin-top:-16px;"/></a></header><div id="breadcrumbs" style="background:#fff;height:34px;margin-bottom:20px;position:relative;width:100%;"><div id="contentWrapper" style="z-index:3;width:100%;position:absolute;overflow:hidden;height:100%;background:transparent;"><h5 id="breadcrumbsTitle" style="font-size:12px;font-weight:bold;margin-bottom:0;margin-left:0;margin-right:0;margin-top:10px;text-indent:30px;text-shadow:1px 1px #fff;">Startside</h5></div><div id="breadcrumbsShadow" style="border-radius:0 0 100% 100% / 0 0 150% 150%;bottom:0;box-shadow:0 0 20px 5px rgba(0, 0, 0, .35);clip:rect(30px,3000px,3000px,0px);height:30px;left:5%;opacity:.6;position:absolute;width:90%;z-index:0;"></div><div style="
+
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+
+    background: -moz-linear-gradient(top, #d9d7cf 0%, #ffffff 2%, #ffffff 10%, #fdfdfd 12%,
+    #dfdfdf 14%, #ededed 17%, #f7f7f7 32%, #f7f7f7 85%, #f8f8f8 86%, #ffffff 88%, #ffffff 100%);
+
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#d9d7cf),
+    color-stop(2%,#ffffff), color-stop(10%,#ffffff), color-stop(12%,#fdfdfd),
+    color-stop(14%,#dfdfdf), color-stop(17%,#ededed), color-stop(32%,#f7f7f7),
+    color-stop(85%,#f7f7f7), color-stop(86%,#f8f8f8), color-stop(88%,#ffffff),
+    color-stop(100%,#ffffff));
+
+    background: -webkit-linear-gradient(top, #d9d7cf 0%,#ffffff 2%,#ffffff 10%,#fdfdfd 12%,
+    #dfdfdf 14%, #ededed 17%,#f7f7f7 32%,#f7f7f7 85%,#f8f8f8 86%,#ffffff 88%,#ffffff 100%);
+
+    background: -o-linear-gradient(top, #d9d7cf 0%,#ffffff 2%,#ffffff 10%,#fdfdfd 12%,
+    #dfdfdf 14%,#ededed 17%,#f7f7f7 32%,#f7f7f7 85%,#f8f8f8 86%,#ffffff 88%,#ffffff 100%);
+
+    background: -ms-linear-gradient(top, #d9d7cf 0%,#ffffff 2%,#ffffff 10%,#fdfdfd 12%,
+    #dfdfdf 14%,#ededed 17%,#f7f7f7 32%,#f7f7f7 85%,#f8f8f8 86%,#ffffff 88%,#ffffff 100%);
+
+    background: linear-gradient(to bottom, #d9d7cf 0%,#ffffff 2%,#ffffff 10%,#fdfdfd 12%,
+    #dfdfdf 14%,#ededed 17%,#f7f7f7 32%,#f7f7f7 85%,#f8f8f8 86%,#ffffff 88%,#ffffff 100%);
+
+"></div>
+</div></section><section id="Content" style="overflow:hidden;"><div id="pageIntro" style="position:relative;overflow:hidden;margin-right:10px;margin-left:10px;height:100px;"><img id="logoHTML5" alt="HTML5" height="80" src="neptune/server/images/html5.png" width="80" style="display:block;margin-left:auto;margin-right:auto;margin-top:10px;"/></div><section id="myFrame" style="padding-top:10px;padding-right:10px;padding-left:10px;padding-bottom:30px;"><div id="frameWrapper" style="margin:auto;min-height:210px;position:relative;z-index:900;"><div id="frameContent" style="background:#fff;border:1px solid #ddd;height:100%;position:absolute;top:0;width:100%;z-index:999;"><div id="menuRowOne" style="margin-bottom:10px;margin-left:5px;margin-right:5px;margin-top:13px;"><ul id="Button1" data-role="listview" data-theme="c"><li id="Demo1" data-icon="arrow-r" data-icon="false" style="border:1px solid #e1e1e1;height:52px;"><a id="demo1Hyperlink" href="zfwf_app_dfo_test2.html"><h5 id="demo1Title" style="font-size:12px;margin:0;text-shadow:none;">Ny reiseregning</h5><h6 id="demo1Description" style="font-size:11px;font-weight:normal;margin:0;text-shadow:none;">Opprett reiseregning</h6></a></li></ul></div><div id="menuRowOne" style="margin-top:10px;margin-right:5px;margin-left:5px;margin-bottom:10px;"><ul id="Button1" data-role="listview" data-theme="c"><li id="Demo1" data-icon="arrow-r" data-icon="false" style="border:1px solid #e1e1e1;height:52px;"><a id="demo1Hyperlink" href="zfwf_app_dfo_test2.html"><h5 id="demo1Title" style="font-size:12px;margin:0;text-shadow:none;">Vis reiseregninger</h5><h6 id="demo1Description" style="font-size:11px;font-weight:normal;margin:0;text-shadow:none;">Vis tidligere reiseregninger</h6></a></li></ul></div><div id="menuRowOne" style="margin-bottom:10px;margin-left:5px;margin-right:5px;margin-top:10px;"><ul id="Button1" data-role="listview" data-theme="c"><li id="Demo1" data-icon="arrow-r" data-icon="false" style="height:52px;border:1px solid #e1e1e1;"><a id="demo1Hyperlink" href="zfwf_app_dfo_test2.html"><h5 id="demo1Title" style="font-size:12px;margin:0;text-shadow:none;">Vis innboks</h5><h6 id="demo1Description" style="font-size:11px;font-weight:normal;margin:0;text-shadow:none;">Ingen nye elementer</h6></a></li></ul></div></div><div id="shadow" style="z-index:2;width:100%;position:absolute;height:60px;box-shadow:0px 5px 2px rgba(0, 0, 0, 0.2);bottom:0;border-radius:50px;"></div></div></section></section></section></div></body></html>
