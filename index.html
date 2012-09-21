@@ -2,18 +2,17 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
-<script type="text/javascript" src="neptune/server/jquery/js/jquery-1.7.2.min.js"></script>
-<link href="neptune/public/application/zfwf_app_dfo_portal2/css/app.css" type="text/css" rel="stylesheet" />
-<link rel="stylesheet" href="http://code.jquery.com/mobile/1.2.0-beta.1/jquery.mobile-1.2.0-beta.1.min.css" />
-
-<script src="http://code.jquery.com/mobile/1.2.0-beta.1/jquery.mobile-1.2.0-beta.1.min.js"></script>
+<link href="neptune/public/application/zfwf_app_sg_start/css/app.css" type="text/css" rel="stylesheet" />
+<link rel="stylesheet" href="http://code.jquery.com/mobile/1.2.0-rc.1/jquery.mobile-1.2.0-rc.1.min.css" />
+<script src="http://code.jquery.com/jquery-1.8.1.min.js"></script>
+<script src="http://code.jquery.com/mobile/1.2.0-rc.1/jquery.mobile-1.2.0-rc.1.min.js"></script>
 
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="viewport" content="user-scalable=0;"/>
 
 <title>Startside</title>
 </head>
-<body ><div data-role="page" data-theme="b" id="mainPage" style="margin:0;overflow:hidden;"><section id="myMenu" style="z-index:0;position:absolute;min-height:100%;float:left;height:100%;"><script>
+<body ><div data-role="page" data-theme="b" id="mainPage" style="overflow:hidden;"><section id="myMenu" style="z-index:0;visibility:hidden;position:absolute;min-height:100%;height:100%;float:left;"><script>
 $('div:jqmData(role="page")').on('pageshow', function(event, ui) {
 	
 	// Remove previous page from DOM.
@@ -36,7 +35,10 @@ $('div:jqmData(role="page")').on('pageshow', function(event, ui) {
 	
 	// Set initial menuStatus variable.
 	menuStatus = false;
-	
+
+                // Load menu in background.	
+	$(menuID).css('visibility', 'visible');
+
 	// Adjust initial myPage height.	
 	if (mypageheight < windowheight) {	
 		// Check if footer exists.
@@ -52,7 +54,7 @@ $('div:jqmData(role="page")').on('pageshow', function(event, ui) {
 	$(menuID).height(maxheight);
 	
 	// Adjust myPage/myMenu height on device orientation change.
-	$(window).off('orientationchange').on('orientationchange', function(event) {
+	$(window).off('orientationchange').on('orientationchange resize', function(event) {
 		// Declare new height variables.
 		var windowheight = $(window).height();
 		var maxheight = Math.max(windowheight, mypageheight);
@@ -87,15 +89,13 @@ $('div:jqmData(role="page")').on('pageshow', function(event, ui) {
 	// Function: Display and hide myMenu.
 	function myMenu(attribute) {
 		if (attribute == 'show') {
-			$('#gloweffect').trigger('mouseleave');
-			$('#gloweffect').removeClass('glowout').addClass('glowin');
+			$('#menuGlow').removeClass('glowoutslow').addClass('glowin');
 			$('a.toggleMenu').removeClass('inactiveMenu').addClass('activeMenu');
 			if ($(menuID).not(':visible')) $(menuID).show();
 			pageposition('165px');
 			menuStatus = true;
 			return false;
 		} else if (attribute == 'hide') {
-			$('#gloweffect').addClass('glowout').removeClass('glowin');
 			$('a.toggleMenu').removeClass('activeMenu').addClass('inactiveMenu');
 			pageposition('0');
 			menuStatus = false;
@@ -108,6 +108,7 @@ $('div:jqmData(role="page")').on('pageshow', function(event, ui) {
 		if (menuStatus != true) {
 			myMenu('show');
 		} else {
+			$('#menuGlow').addClass('glowoutslow').removeClass('glowin');
 			myMenu('hide');
 		}
 	});
@@ -118,14 +119,19 @@ $('div:jqmData(role="page")').on('pageshow', function(event, ui) {
 		if (event.type == 'swiperight') {
 			if (!menuStatus) myMenu('show');
 		} else if (event.type == 'swipeleft') {
-			if (menuStatus) myMenu('hide');
+			if (menuStatus) {
+				$('#menuGlow').addClass('glowoutslow').removeClass('glowin');
+				myMenu('hide');
+			}
 		}
 	});
 	
 	// myMenu list item click action.
 	$('a.contentLink').off('click').on('click', function(event) {
-		event.preventDefault();
+		// Declare list element and link variables.
+		var p = $(this).parent();
 		var myhref = $(this).attr('href');
+		var mydatarel = $(this).attr('data-rel');
 		var mytransition = $(this).attr('data-transition');
 		var mydirection = $(this).attr('data-direction');
 		if ( mydirection == "reverse") {
@@ -133,22 +139,28 @@ $('div:jqmData(role="page")').on('pageshow', function(event, ui) {
 		} else {
 			myreverse = false;
 		}
-		var p = $(this).parent();
-		if ($(p).hasClass('active')) {
-			return false;
-		} else {
-			myMenu('hide');
-			$(menuID).hide('fast', function () {
-				$.mobile.changePage(myhref, {
-					transition: mytransition,
-					reverse: myreverse
+		
+		// Trigger .changePage if data-rel is not set to popup.
+		if (mydatarel != 'popup') {
+			event.preventDefault();
+			if ($(p).hasClass('active')) {
+				return false;
+			} else {
+				$('#menuGlow').addClass('glowoutfast').removeClass('glowin');
+				myMenu('hide');
+				$(menuID).hide('fast', function () {
+					$.mobile.changePage(myhref, {
+						transition: mytransition,
+						reverse: myreverse
+					});
 				});
-			});
-			return false;
-		}
+				return false;
+			}
+		}	
 	});
 
-});</script><div data-role="content" id="menu" style="overflow:hidden;padding:0;width:165px;min-height:100%;margin:0;height:100%;"><div id="menuHeader" class="menuHeader" style="padding-left:10px;height:50px;border-top:solid #333 1px;"><h3 id="headerTitle" style="text-shadow:0px 1px 1px #000;margin-top:18px;margin-right:0;margin-left:0;margin-bottom:0;font-size:12px;font-family:arial;color:#fff;background:transparent;">Hovedmeny</h3></div><div id="menuList" style="height:inherit;min-width:inherit;padding:0; overflow-y: auto;  -webkit-overflow-scrolling: touch;"><ul style="margin:0;padding-bottom:52px;padding-left:0;padding-right:0;padding-top:0;width:inherit;"><li class="active" style="list-style-type:none;margin:0;padding:0;"><a id="Hjem" class="contentLink" data-direction="reverse" data-transition="slide" href="zfwf_app_dfo_portal2.html">Hjem</a></li><li style="list-style-type:none;margin:0;padding:0;"><a id="Nyreiseregning" class="contentLink" href="#">Ny reiseregning</a></li><li style="list-style-type:none;margin:0;padding:0;"><a id="Visreiseregninger" class="contentLink" href="#">Vis reiseregninger</a></li><li style="padding:0;margin:0;list-style-type:none;"><a id="Innboks" class="contentLink" data-direction="reverse" data-prefetch="true" data-transition="slide" href="zfwf_app_dfo_test2.html">Vis innboks</a></li><li style="list-style-type:none;margin:0;padding:0;"><a id="loggUt" class="contentLink" href="#">Logg ut</a></li></ul></div></div></section><section class="myPage" id="myPage" style="box-shadow:-2px 1px 10px 0px #2c2c2c;height:100%;min-height:100%;position:relative;z-index:999;"><section id="Header"><header data-role="header" data-tap-toggle="false" data-theme="a" id="myHeader" style="height:50px;position:relative;"><h3 id="headerTitle" style="font-size:14px;margin-bottom:0;margin-left:0;margin-right:0;margin-top:16px;"></h3><a id="Menu" class="toggleMenu" data-role="none" href="#" style="background:url('/neptune/public/application/zfwf_app_viportal/images/menu.png');background-position:left;background-repeat:no-repeat;height:32px;margin-left:10px;margin-top:7px;width:100px;"><img class="glow" id="gloweffect" src="neptune/public/application/zfwf_app_dfo_portal2/images/glow.png" style="margin-left:-16px;margin-top:-16px;"/></a></header><div id="breadcrumbs" style="background:#fff;height:34px;margin-bottom:20px;position:relative;width:100%;"><div id="contentWrapper" style="z-index:3;width:100%;position:absolute;overflow:hidden;height:100%;background:transparent;"><h5 id="breadcrumbsTitle" style="font-size:12px;font-weight:bold;margin-bottom:0;margin-left:0;margin-right:0;margin-top:10px;text-indent:30px;text-shadow:1px 1px #fff;">Startside</h5></div><div id="breadcrumbsShadow" style="border-radius:0 0 100% 100% / 0 0 150% 150%;bottom:0;box-shadow:0 0 20px 5px rgba(0, 0, 0, .35);clip:rect(30px,3000px,3000px,0px);height:30px;left:5%;opacity:.6;position:absolute;width:90%;z-index:0;"></div><div style="
+});</script><div data-role="content" id="menu" style="height:100%;margin:0;min-height:100%;overflow:hidden;padding:0;width:165px;"><div id="menuHeader" class="menuHeader" style="border-bottom:solid #333 1px;border-top:solid #333 1px;box-shadow:0 1px 0 #727272;height:50px;padding-left:10px;"><h3 id="headerTitle" style="background:transparent;color:#fff;font-family:arial;font-size:12px;margin-bottom:0;margin-left:0;margin-right:0;margin-top:18px;text-shadow:0px 1px 1px #000;">Hovedmeny</h3></div><div id="menuList" style="padding:0;min-width:inherit;height:inherit; overflow-y: auto;  -webkit-overflow-scrolling: touch;"><ul style="width:inherit;padding-top:0;padding-right:0;padding-left:0;padding-bottom:52px;margin:0;"><li class="active" style="list-style-type:none;margin:0;padding:0;"><a id="Home" class="contentLink" data-direction="reverse" data-transition="slide" href="zfwf_app_sg_start.html">Hjem</a></li><li style="list-style-type:none;margin:0;padding:0;"><a id="newExpense" class="contentLink" data-direction="reverse" href="zfwf_app_sg_inbox.html">Ny reiseregning</a></li><li style="padding:0;margin:0;list-style-type:none;"><a id="viewExpense" class="contentLink" data-direction="reverse" href="zfwf_app_sg_inbox.html">Vis reiseregninger</a></li><li style="list-style-type:none;margin:0;padding:0;"><a id="Inbox" class="contentLink" data-direction="reverse" data-prefetch="true" data-transition="slide" href="zfwf_app_sg_inbox.html">Vis innboks</a></li><li style="list-style-type:none;margin:0;padding:0;"><a id="LogOut" class="contentLink" href="#confirmLogout" data-rel="popup">Logg ut</a></li></ul></div></div><div data-overlay-theme="a" data-theme="c" id="confirmLogout" data-role="popup" data-position-to="window" data-transition="flip" style="overflow:hidden;width:260px;"><header id="popupHeader" class="popupHeader" data-theme="a" style="height:40px;margin-top:-22px;padding:5px;"><h5 id="popupTitle" style="text-shadow:1px 1px #000;text-align:center;color:#fff;">Vennligst bekreft</h5></header><div id="popupContent" class="myPage"><h5 id="popupDescription" style="font-weight:normal;margin:0;padding:10px;">Er du sikker på at du ønsker å logge ut?
+</h5><div id="logoutOptions" class="ui-grid-a" style="margin:auto;padding-bottom:20px;padding-left:5px;padding-right:5px;padding-top:10px;"><div id="Cancel" class="ui-block-a"><a id="cancelLogout" data-mini="true" data-rel="back" data-role="button" data-theme="c" href="#">Avbryt</a></div><div id="Logout" class="ui-block-b"><a id="doLogout" data-mini="true" data-rel="back" data-role="button" data-theme="b" href="#">Logg ut</a></div></div></div></div></section><section class="myPage" id="myPage" style="box-shadow:-2px 1px 10px 0px #2c2c2;height:100%;min-height:100%;position:relative;z-index:999;"><section id="Header"><header data-role="header" data-tap-toggle="false" data-theme="a" id="myHeader" style="height:50px;position:relative;"><h3 id="headerTitle" style="font-size:14px;margin-bottom:0;margin-left:0;margin-right:0;margin-top:16px;"></h3><a id="Menu" class="toggleMenu" data-role="none" href="#" style="width:100px;margin-top:7px;margin-left:10px;height:32px;background-repeat:no-repeat;background-position:left;background-image:url('/neptune/public/application/zfwf_app_sg_start/images/menu.png');"><img class="glow glowentrypulse" id="menuGlow" src="neptune/public/application/zfwf_app_sg_start/images/glow.png" style="margin-left:-16px;margin-top:-16px;"/></a></header><div id="breadcrumbs" style="width:100%;position:relative;margin-bottom:20px;height:34px;background:#fff;"><div id="contentWrapper" style="background:transparent;height:100%;overflow:hidden;position:absolute;width:100%;z-index:3;"><h5 id="breadcrumbsTitle" style="text-shadow:1px 1px #fff;text-indent:30px;margin-top:10px;margin-right:0;margin-left:0;margin-bottom:0;font-weight:bold;font-size:12px;">Startside</h5></div><div id="breadcrumbsShadow" style="z-index:0;width:90%;position:absolute;opacity:.6;left:5%;height:30px;clip:rect(30px,3000px,3000px,0px);box-shadow:0 0 20px 5px rgba(0, 0, 0, .35);bottom:0;border-radius:0 0 100% 100% / 0 0 150% 150%;"></div><div style="
 
     position: absolute;
     width: 100%;
@@ -177,4 +189,4 @@ $('div:jqmData(role="page")').on('pageshow', function(event, ui) {
     #dfdfdf 14%,#ededed 17%,#f7f7f7 32%,#f7f7f7 85%,#f8f8f8 86%,#ffffff 88%,#ffffff 100%);
 
 "></div>
-</div></section><section id="Content" style="overflow:hidden;"><div id="pageIntro" style="position:relative;overflow:hidden;margin-right:10px;margin-left:10px;height:100px;"><img id="logoHTML5" alt="HTML5" height="80" src="neptune/server/images/html5.png" width="80" style="display:block;margin-left:auto;margin-right:auto;margin-top:10px;"/></div><section id="myFrame" style="padding-top:10px;padding-right:10px;padding-left:10px;padding-bottom:30px;"><div id="frameWrapper" style="margin:auto;min-height:210px;position:relative;z-index:900;"><div id="frameContent" style="background:#fff;border:1px solid #ddd;height:100%;position:absolute;top:0;width:100%;z-index:999;"><div id="menuRowOne" style="margin-bottom:10px;margin-left:5px;margin-right:5px;margin-top:13px;"><ul id="Button1" data-role="listview" data-theme="c"><li id="Demo1" data-icon="arrow-r" data-icon="false" style="border:1px solid #e1e1e1;height:52px;"><a id="demo1Hyperlink" href="zfwf_app_dfo_test2.html"><h5 id="demo1Title" style="font-size:12px;margin:0;text-shadow:none;">Ny reiseregning</h5><h6 id="demo1Description" style="font-size:11px;font-weight:normal;margin:0;text-shadow:none;">Opprett reiseregning</h6></a></li></ul></div><div id="menuRowOne" style="margin-top:10px;margin-right:5px;margin-left:5px;margin-bottom:10px;"><ul id="Button1" data-role="listview" data-theme="c"><li id="Demo1" data-icon="arrow-r" data-icon="false" style="border:1px solid #e1e1e1;height:52px;"><a id="demo1Hyperlink" href="zfwf_app_dfo_test2.html"><h5 id="demo1Title" style="font-size:12px;margin:0;text-shadow:none;">Vis reiseregninger</h5><h6 id="demo1Description" style="font-size:11px;font-weight:normal;margin:0;text-shadow:none;">Vis tidligere reiseregninger</h6></a></li></ul></div><div id="menuRowOne" style="margin-bottom:10px;margin-left:5px;margin-right:5px;margin-top:10px;"><ul id="Button1" data-role="listview" data-theme="c"><li id="Demo1" data-icon="arrow-r" data-icon="false" style="height:52px;border:1px solid #e1e1e1;"><a id="demo1Hyperlink" href="zfwf_app_dfo_test2.html"><h5 id="demo1Title" style="font-size:12px;margin:0;text-shadow:none;">Vis innboks</h5><h6 id="demo1Description" style="font-size:11px;font-weight:normal;margin:0;text-shadow:none;">Ingen nye elementer</h6></a></li></ul></div></div><div id="shadow" style="z-index:2;width:100%;position:absolute;height:60px;box-shadow:0px 5px 2px rgba(0, 0, 0, 0.2);bottom:0;border-radius:50px;"></div></div></section></section></section></div></body></html>
+</div></section><section id="Content" style="overflow:hidden;"><div id="pageIntro" style="height:100px;margin-left:10px;margin-right:10px;overflow:hidden;position:relative;"><img id="logoHTML5" alt="HTML5" height="80" src="neptune/server/images/html5.png" width="80" style="margin-top:10px;margin-right:auto;margin-left:auto;display:block;"/></div><section id="myFrame" style="padding-right:10px;padding-left:10px;padding-bottom:30px;overflow:hidden;margin-top:10px;background:transparent;"><div id="frameWrapper" style="margin:auto;position:relative;z-index:900;"><div id="frameContent" style="z-index:1;width:100%;top:0;position:relative;padding-top:10px;padding-bottom:10px;min-height:20px;height:100%;border:1px solid #ddd;background:#fff;"><div id="mainMenu" style="padding-left:10px;padding-right:10px;"><ul data-role="listview" data-theme="c"><li data-icon="arrow-r" data-icon="false" style="border:1px solid #e1e1e1;height:52px;margin-bottom:10px;padding:0;"><a id="Nyreiseregning" href="zfwf_app_sg_inbox.html"><h5 id="Title" style="text-shadow:none;padding:0;margin:0;font-size:12px;">Ny reiseregning</h5><h6 id="Description" style="font-size:11px;font-weight:normal;margin:0;padding:0;text-shadow:none;">Opprett reiseregning</h6></a></li><li data-icon="arrow-r" data-icon="false" style="border:1px solid #e1e1e1;height:52px;margin-bottom:10px;"><a id="Visreiseregninger" href="zfwf_app_sg_inbox.html"><h5 id="Title" style="font-size:12px;margin:0;text-shadow:none;">Vis reiseregninger</h5><h6 id="Description" style="text-shadow:none;margin:0;font-weight:normal;font-size:11px;">Vis tidligere reiseregninger</h6></a></li><li data-icon="arrow-r" data-icon="false" style="border:1px solid #e1e1e1;height:52px;"><a id="Innboks" href="zfwf_app_sg_inbox.html"><h5 id="Title" style="font-size:12px;margin:0;text-shadow:none;">Vis innboks</h5><h6 id="Description" style="font-size:11px;font-weight:normal;margin:0;text-shadow:none;">Ingen nye elementer</h6></a></li></ul></div></div><div id="frameShadow" class="shadow" style="border-radius:50px;bottom:0;box-shadow:0px 5px 2px rgba(0, 0, 0, 0.2);height:60px;position:absolute;width:100%;z-index:0;"></div></div></section></section></section></div></body></html>
