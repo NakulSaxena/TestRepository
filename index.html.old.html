@@ -1,0 +1,91 @@
+﻿<!DOCTYPE html><html>
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+<link href="neptune/public/application/zfwf_app_sg_login/css/app.css" type="text/css" rel="stylesheet" />
+<link rel="stylesheet" href="http://code.jquery.com/mobile/1.2.0-rc.1/jquery.mobile-1.2.0-rc.1.min.css" />
+<script src="http://code.jquery.com/jquery-1.8.1.min.js"></script>
+<script src="http://code.jquery.com/mobile/1.2.0-rc.1/jquery.mobile-1.2.0-rc.1.min.js"></script>
+
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="viewport" content="user-scalable=0;"/>
+
+<script type="text/javascript" charset="utf-8">
+
+$( document ).bind( "mobileinit", function() {
+    $.mobile.allowCrossDomainPages = true;
+    $.support.cors = true;
+    $.mobile.pushStateEnabled = false;
+});
+
+</script>
+<title>Innlogging</title>
+</head>
+<body ><div data-role="page" data-theme="b" id="mainPage" style="background:-webkit-linear-gradient(top, rgba(243,243,243,1) 0%,rgba(255,255,255,1) 100%);overflow:hidden;"><section id="myPage" style="box-shadow:-2px 1px 10px 0px #2c2c2;height:100%;min-height:100%;position:relative;z-index:999;"><section id="Header"><header data-role="header" data-tap-toggle="false" data-theme="a" id="myHeader" style="height:50px;position:relative;"><h3 id="headerTitle" style="font-size:14px;margin-bottom:0;margin-left:0;margin-right:0;margin-top:16px;"></h3></header><div id="breadcrumbs" style="width:100%;position:relative;margin-bottom:20px;height:34px;background:#fff;"><div id="contentWrapper" style="background:transparent;height:100%;overflow:hidden;position:absolute;width:100%;z-index:3;"><h5 id="breadcrumbsTitle" style="text-shadow:1px 1px #fff;text-indent:30px;margin-top:10px;margin-right:0;margin-left:0;margin-bottom:0;font-weight:bold;font-size:12px;">Logg inn</h5></div><div id="breadcrumbsShadow" style="z-index:0;width:90%;position:absolute;opacity:.6;left:5%;height:30px;clip:rect(30px,3000px,3000px,0px);box-shadow:0 0 20px 5px rgba(0, 0, 0, .35);bottom:0;border-radius:0 0 100% 100% / 0 0 150% 150%;"></div><div style="
+
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+
+    background: -moz-linear-gradient(top, #d9d7cf 0%, #ffffff 2%, #ffffff 10%, #fdfdfd 12%,
+    #dfdfdf 14%, #ededed 17%, #f7f7f7 32%, #f7f7f7 85%, #f8f8f8 86%, #ffffff 88%, #ffffff 100%);
+
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#d9d7cf),
+    color-stop(2%,#ffffff), color-stop(10%,#ffffff), color-stop(12%,#fdfdfd),
+    color-stop(14%,#dfdfdf), color-stop(17%,#ededed), color-stop(32%,#f7f7f7),
+    color-stop(85%,#f7f7f7), color-stop(86%,#f8f8f8), color-stop(88%,#ffffff),
+    color-stop(100%,#ffffff));
+
+    background: -webkit-linear-gradient(top, #d9d7cf 0%,#ffffff 2%,#ffffff 10%,#fdfdfd 12%,
+    #dfdfdf 14%, #ededed 17%,#f7f7f7 32%,#f7f7f7 85%,#f8f8f8 86%,#ffffff 88%,#ffffff 100%);
+
+    background: -o-linear-gradient(top, #d9d7cf 0%,#ffffff 2%,#ffffff 10%,#fdfdfd 12%,
+    #dfdfdf 14%,#ededed 17%,#f7f7f7 32%,#f7f7f7 85%,#f8f8f8 86%,#ffffff 88%,#ffffff 100%);
+
+    background: -ms-linear-gradient(top, #d9d7cf 0%,#ffffff 2%,#ffffff 10%,#fdfdfd 12%,
+    #dfdfdf 14%,#ededed 17%,#f7f7f7 32%,#f7f7f7 85%,#f8f8f8 86%,#ffffff 88%,#ffffff 100%);
+
+    background: linear-gradient(to bottom, #d9d7cf 0%,#ffffff 2%,#ffffff 10%,#fdfdfd 12%,
+    #dfdfdf 14%,#ededed 17%,#f7f7f7 32%,#f7f7f7 85%,#f8f8f8 86%,#ffffff 88%,#ffffff 100%);
+
+"></div>
+</div></section><section id="Content" style="overflow:hidden;"><section id="myFrame" style="padding-right:10px;padding-left:10px;padding-bottom:30px;overflow:hidden;margin-top:10px;background:transparent;"><div id="frameWrapper" style="margin:auto;position:relative;z-index:900;"><div id="frameContent" style="z-index:1;width:100%;top:0;position:relative;padding-top:10px;padding-bottom:20px;min-height:20px;height:100%;border:1px solid #ddd;background:#fff;"><section id="myForm" style="margin-left:10px;margin-right:10px;"><form method="post" name="loginForm" action="http://neptune.solidgroup.no/neptune/native/zfwf_app_sg_start.html" data-transition="none" id="myForm"><script>
+$(document).bind("pageinit", function(){
+
+$(".labeldiv").click(function() {
+var currentID = this.id;
+var parent = this.parentNode.id;
+var children = document.getElementById(parent).getElementsByTagName("input");
+var selectChildren = document.getElementById(parent).getElementsByTagName("select");
+if(children.length == 1) {
+	if (document.getElementById(children[0].id).type == 'text') {
+		document.getElementById(children[0].id).focus();
+	} else if (document.getElementById(children[0].id).type == 'checkbox' ) {
+		if (document.getElementById(children[0].id).checked == false) {
+			document.getElementById(children[0].id).checked = true;
+		} else {
+			document.getElementById(children[0].id).checked = false;
+		}
+	} else if (document.getElementById(children[0].id).type == 'date'
+			|| document.getElementById(children[0].id).type == 'time'
+|| document.getElementById(children[0].id).type == 'datetime'
+			|| document.getElementById(children[0].id).type == 'number'
+			|| document.getElementById(children[0].id).type == 'email'
+			|| document.getElementById(children[0].id).type == 'month'
+			|| document.getElementById(children[0].id).type == 'week'
+                                                || document.getElementById(children[0].id).type == 'tel'
+                                                || document.getElementById(children[0].id).type == 'password') {
+				document.getElementById(children[0].id).focus();
+	} else if(document.getElementById(children[0].id).type == 'radio') {
+		if (document.getElementById(children[0].id).checked == false) {
+			document.getElementById(children[0].id).checked = true;
+		}
+	}
+} else if(selectChildren.length == 1) {
+	document.getElementById(selectChildren[0].id).focus();
+}
+});
+
+});
+</script><div id="inputUsername" style="position:relative;padding-top:10px;padding-bottom:10px;overflow:hidden;margin:0;border-bottom:1px solid #f1f1f1;background:transparent;"><div id="usernameLabel" class="labeldiv" style="background:transparent;float:left;margin:0;width:40%;"><h5 id="usernameTitle" style="font-size:14px;font-weight:bold;margin-bottom:3px;margin-left:0;margin-right:0;margin-top:3px;text-shadow:none;">Brukernavn</h5></div><div id="usernameFieldcontain" style="width:60%;position:relative;margin:0;float:right;background:transparent;"><input name="sap-user" id="sap-user" autocomplete="off" data-role="none" type="text" style="width:100%;text-align:right;padding:0;outline:none;margin:0;font-size:14px;box-shadow:none;border-radius:0;border:0;background:transparent;" value=""/></div></div><div id="inputPassword" style="position:relative;padding-top:10px;padding-bottom:10px;overflow:hidden;margin:0;border-bottom:1px solid #f1f1f1;background:transparent;"><div id="passwordLabel" class="labeldiv" style="background:transparent;float:left;margin:0;width:40%;"><h5 id="passwordTitle" style="text-shadow:none;margin-top:3px;margin-right:0;margin-left:0;margin-bottom:3px;font-weight:bold;font-size:14px;">Passord</h5></div><div id="passwordFieldcontain" style="background:transparent;float:right;margin:0;position:relative;width:60%;"><input name="sap-password" id="sap-password" autocomplete="off" data-role="none" type="password" style="background:transparent;border:0;border-radius:0;box-shadow:none;font-size:14px;margin:0;outline:none;padding:0;text-align:right;width:100%;" value=""/></div></div><input name="sap-sessioncmd" id="sap-sessioncmd" data-theme="d" type="text" style="display:none;" value="open"/><div id="formSubmit" hidden="true"><button data-role="button" data-theme="c" id="hiddenSubmit" type="submit" > Logg inn </button></div><input type="hidden" name="applid" value="ZFWF_APP_SG_LOGIN"></form></section></div><div id="frameShadow" class="shadow" style="border-radius:50px;bottom:0;box-shadow:0px 5px 2px rgba(0, 0, 0, 0.2);height:60px;position:absolute;width:100%;z-index:0;"></div></div></section><a id="loginLink" data-corners="false" data-mini="true" data-role="button" data-theme="a" onClick="document.getElementById('hiddenSubmit').click();" style="border-radius:5px;margin-left:11px;margin-right:11px;margin-top:20px;">Logg inn</a></section></section></div></body></html>
